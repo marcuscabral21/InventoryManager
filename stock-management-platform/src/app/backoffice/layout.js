@@ -28,6 +28,24 @@ return (
                     >
                         Stock
                     </a>
+                    <a
+                        href="/backoffice/requests"
+                        className="block px-4 py-2 rounded hover:bg-gray-700 font-mono"
+                    >
+                        Requests
+                    </a>
+                    <a
+                        href="/backoffice/history"
+                        className="block px-4 py-2 rounded hover:bg-gray-700 font-mono"
+                    >
+                        History
+                    </a>
+                    <a
+                        href="/backoffice/purchaselist"
+                        className="block px-4 py-2 rounded hover:bg-gray-700 font-mono"
+                    >
+                        Purchase list
+                    </a>
                 </li>
             </ul>
         </nav>
