@@ -1,3 +1,4 @@
+// Componente da página principal do Backoffice
 export default function BackofficePage() {
     return (
       <div className="pt-0 p-6">

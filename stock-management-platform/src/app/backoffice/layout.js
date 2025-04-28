@@ -1,7 +1,8 @@
-export const metadata = {
-    title: 'Backoffice - Inventory Management', // Set the title of the page
+export const metadata = { // Define metadados da página, como o título que será exibido no navegador
+    title: 'Backoffice - Inventory Management', // Define o título da aba da página
 }
 
+// Componente principal de layout para o Backoffice
 export default function BackofficeLayout({ children }) {
 return (
     <div className="flex min-h-screen bg-gray-130">

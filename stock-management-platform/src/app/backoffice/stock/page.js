@@ -1,8 +1,10 @@
-'use client';
+'use client'; // Necessário para indicar que este componente é do lado do cliente (Next.js App Router)
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
 
+// Componente principal da página de Estoque
 export default function StockPage() {
+  // Estados para armazenar produtos, dados do formulário, ID em edição e campo focado
   const [products, setProducts] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -13,11 +15,12 @@ export default function StockPage() {
   const [editingId, setEditingId] = useState(null);
   const [focusedField, setFocusedField] = useState(null);
 
-  // Fetch products
+  // Buscar produtos assim que o componente for montado
   useEffect(() => {
     fetchProducts();
   }, []);
 
+  // Função para buscar produtos do banco de dados
   const fetchProducts = async () => {
     const { data, error } = await supabase
       .from('products')
@@ -27,20 +30,21 @@ export default function StockPage() {
     if (!error) setProducts(data || []);
   };
 
-  // Handle form input changes
+  // Atualizar o estado do formulário ao digitar nos inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'name' ? value : Number(value)
+      [name]: name === 'name' ? value : Number(value) // Converte para número, exceto o nome
     });
   };
 
-  // Submit form (create/update)
+  // Submeter o formulário: criar ou atualizar produto
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (editingId) {
+      // Atualizar produto existente
       await supabase
         .from('products')
         .update(formData)
@@ -50,12 +54,12 @@ export default function StockPage() {
         .from('products')
         .insert([formData]);
     }
-    
-    fetchProducts();
-    resetForm();
+    // Criar novo produto
+    fetchProducts(); // Atualiza lista de produtos
+    resetForm(); // Limpa o formulário
   };
 
-  // Edit product
+  // Preencher formulário para editar produto
   const handleEdit = (product) => {
     setFormData({
       name: product.name,
@@ -66,18 +70,18 @@ export default function StockPage() {
     setEditingId(product.id);
   };
 
-  // Delete product
+  // Deletar produto
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this product?')) {
       await supabase
         .from('products')
         .delete()
         .eq('id', id);
-      fetchProducts();
+      fetchProducts(); // Atualiza lista após deletar
     }
   };
 
-  // Reset form
+  // Resetar formulário para valores iniciais
   const resetForm = () => {
     setFormData({
       name: '',
@@ -88,7 +92,7 @@ export default function StockPage() {
     setEditingId(null);
   };
 
-  // Format price with € symbol
+  // Função utilitária para formatar preço em Euro (€)
   const formatPrice = (price) => {
     return new Intl.NumberFormat('pt-PT', {
       style: 'currency',
@@ -96,6 +100,7 @@ export default function StockPage() {
     }).format(price);
   };
 
+  // JSX (o que será renderizado)
   return (
     <div className="p-4 md:p-6">
       <h2 className="text-xl md:text-2xl font-semibold font-mono mb-4 md:mb-6">Inventory Manager</h2>
