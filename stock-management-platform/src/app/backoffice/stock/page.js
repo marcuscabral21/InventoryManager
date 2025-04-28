@@ -1,7 +1,6 @@
-// backoffice/stock.js
 'use client';
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase/client'; // Usando alias
+import { supabase } from '@/lib/supabase/client';
 
 export default function StockPage() {
   const [products, setProducts] = useState([]);
@@ -12,6 +11,7 @@ export default function StockPage() {
     discounted_price: 0
   });
   const [editingId, setEditingId] = useState(null);
+  const [focusedField, setFocusedField] = useState(null);
 
   // Fetch products
   useEffect(() => {
@@ -97,52 +97,76 @@ export default function StockPage() {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold font-mono mb-6">Inventory Manager</h2>
+    <div className="p-4 md:p-6">
+      <h2 className="text-xl md:text-2xl font-semibold font-mono mb-4 md:mb-6">Inventory Manager</h2>
       
       {/* CRUD Form */}
-      <div className="bg-gray-800 p-6 rounded-lg shadow mb-8">
-        <h3 className="text-xl font-mono mb-4">
+      <div className="bg-gray-800 p-4 md:p-6 rounded-lg shadow mb-6 md:mb-8">
+        <h3 className="text-lg md:text-xl font-mono mb-3 md:mb-4">
           {editingId ? 'Edit Product' : 'Add New Product'}
         </h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
             <div>
-              <label className="block font-mono mb-1">Product name</label>
+              <label className="block text-sm md:text-base font-mono mb-1">Product name</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full p-2 bg-gray-700 rounded"
+                className="w-full p-2 text-sm md:text-base bg-gray-700 rounded"
                 required
               />
             </div>
             
             <div>
-              <label className="block font-mono mb-1">Quantity in Stock</label>
+              <label className="block text-sm md:text-base font-mono mb-1">Quantity in Stock</label>
               <input
                 type="number"
                 name="stock"
                 min="0"
-                value={formData.stock}
+                value={focusedField === 'stock' && formData.stock === 0 ? '' : formData.stock}
                 onChange={handleInputChange}
-                className="w-full p-2 bg-gray-700 rounded"
+                onFocus={() => {
+                  setFocusedField('stock');
+                  if (formData.stock === 0) {
+                    setFormData({...formData, stock: ''});
+                  }
+                }}
+                onBlur={() => {
+                  setFocusedField(null);
+                  if (formData.stock === '') {
+                    setFormData({...formData, stock: 0});
+                  }
+                }}
+                className="w-full p-2 text-sm md:text-base bg-gray-700 rounded"
                 required
               />
             </div>
             
             <div>
-              <label className="block font-mono mb-1">Normal price</label>
+              <label className="block text-sm md:text-base font-mono mb-1">Normal price</label>
               <div className="relative">
                 <input
                   type="number"
                   name="price"
                   min="0"
-                  step="1"
-                  value={formData.price}
+                  step="0.01"
+                  value={focusedField === 'price' && formData.price === 0 ? '' : formData.price}
                   onChange={handleInputChange}
-                  className="w-full p-2 bg-gray-700 rounded pl-8"
+                  onFocus={() => {
+                    setFocusedField('price');
+                    if (formData.price === 0) {
+                      setFormData({...formData, price: ''});
+                    }
+                  }}
+                  onBlur={() => {
+                    setFocusedField(null);
+                    if (formData.price === '') {
+                      setFormData({...formData, price: 0});
+                    }
+                  }}
+                  className="w-full p-2 text-sm md:text-base bg-gray-700 rounded pl-8"
                   required
                 />
                 <span className="absolute right-2 top-2">€</span>
@@ -150,16 +174,28 @@ export default function StockPage() {
             </div>
             
             <div>
-              <label className="block font-mono mb-1">Discounted price</label>
+              <label className="block text-sm md:text-base font-mono mb-1">Discounted price</label>
               <div className="relative">
                 <input
                   type="number"
                   name="discounted_price"
                   min="0"
-                  step="1"
-                  value={formData.discounted_price}
+                  step="0.01"
+                  value={focusedField === 'discounted_price' && formData.discounted_price === 0 ? '' : formData.discounted_price}
                   onChange={handleInputChange}
-                  className="w-full p-2 bg-gray-700 rounded pl-8"
+                  onFocus={() => {
+                    setFocusedField('discounted_price');
+                    if (formData.discounted_price === 0) {
+                      setFormData({...formData, discounted_price: ''});
+                    }
+                  }}
+                  onBlur={() => {
+                    setFocusedField(null);
+                    if (formData.discounted_price === '') {
+                      setFormData({...formData, discounted_price: 0});
+                    }
+                  }}
+                  className="w-full p-2 text-sm md:text-base bg-gray-700 rounded pl-8"
                   required
                 />
                 <span className="absolute right-2 top-2">€</span>
@@ -170,7 +206,7 @@ export default function StockPage() {
           <div className="flex gap-2 pt-2">
             <button
               type="submit"
-              className="bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-mono"
+              className="text-sm md:text-base bg-green-600 hover:bg-blue-700 text-white px-3 py-1 md:px-4 md:py-2 rounded font-mono"
             >
               {editingId ? 'Update' : 'Add'}
             </button>
@@ -179,7 +215,7 @@ export default function StockPage() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="bg-red-600 hover:bg-gray-700 text-white px-4 py-2 rounded font-mono"
+                className="text-sm md:text-base bg-red-600 hover:bg-gray-700 text-white px-3 py-1 md:px-4 md:py-2 rounded font-mono"
               >
                 Cancel
               </button>
@@ -188,9 +224,48 @@ export default function StockPage() {
         </form>
       </div>
       
-      {/* Products Table */}
+      {/* Products List - Responsive */}
       <div className="overflow-x-auto">
-        <table className="w-full table-auto">
+        {/* Mobile View (Cards) */}
+        <div className="md:hidden space-y-3">
+          {products.map((product) => (
+            <div key={product.id} className="bg-gray-800 p-4 rounded-lg">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-mono font-semibold text-base">{product.name}</h3>
+                  <p className="text-sm font-mono text-gray-300">Stock: {product.stock}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(product)}
+                    className="text-yellow-400 text-sm font-mono px-2 py-1"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(product.id)}
+                    className="text-red-400 text-sm font-mono px-2 py-1"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <div>
+                  <p className="text-xs text-gray-400 font-mono">Normal Price</p>
+                  <p className="font-mono text-sm">{formatPrice(product.price)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-mono">Discounted Price</p>
+                  <p className="font-mono text-sm">{formatPrice(product.discounted_price)}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop View (Table) */}
+        <table className="hidden md:table w-full">
           <thead className="bg-gray-700">
             <tr>
               <th className="px-4 py-3 text-left font-mono">Name</th>
@@ -211,13 +286,13 @@ export default function StockPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="text-yellow-400 hover:text-yellow-300 font-mono"
+                      className="text-yellow-400 hover:text-yellow-300 font-mono text-sm md:text-base"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="text-red-400 hover:text-red-300 font-mono"
+                      className="text-red-400 hover:text-red-300 font-mono text-sm md:text-base"
                     >
                       Remove
                     </button>
