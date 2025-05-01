@@ -42,10 +42,16 @@ return (
                         History
                     </a>
                     <a
-                        href="/backoffice/purchaselist"
+                        href="/backoffice/finances"
                         className="block px-4 py-2 rounded hover:bg-gray-700 font-mono"
                     >
-                        Purchase list
+                        Finances
+                    </a>
+                    <a
+                        href="/backoffice/event"
+                        className="block px-4 py-2 rounded hover:bg-gray-700 font-mono"
+                    >
+                        Event
                     </a>
                 </li>
             </ul>
